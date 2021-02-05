@@ -1,6 +1,6 @@
 <template>
    <tab-bar>
-<tab-bar-item path="/home" activeColor="red">
+<tab-bar-item path="/home" activeColor="deeppink">
   <template #item-icon>
     <img src="../../assets/images/tabbar/home.svg" alt="">
   </template>
@@ -11,7 +11,7 @@
          <div >首页</div>
       </template>
 </tab-bar-item>
-<tab-bar-item path="/category" activeColor="red">
+<tab-bar-item path="/category" activeColor="deeppink">
  
   
 <template #item-icon>
@@ -25,7 +25,7 @@
       </template>
    
 </tab-bar-item>
-<tab-bar-item path="/shopcart" activeColor="red">
+<tab-bar-item path="/shopcart" activeColor="deeppink">
 
 <template #item-icon>
  <img slot="item-icon" src="../../assets/images/tabbar/shopcart.svg" alt="">
@@ -37,28 +37,24 @@
          <div >购物车</div>
       </template>
 </tab-bar-item>
-<tab-bar-item path="/profile" activeColor="red">
-
- 
-
-  
-       
+<tab-bar-item path="/profile" activeColor="deeppink">
+   
 <template #item-icon>
-  <img slot="item-icon" src="../../assets/images/tabbar/profile.svg" alt="">
+  <img slot="item-icon" src="~assets/images/tabbar/profile.svg" alt="">
   </template>
  <template #item-icon-active>
- <img slot="item-icon-active" src="../../assets/images/tabbar/profile_active.svg" alt="">
+ <img slot="item-icon-active" src="~assets/images/tabbar/profile_active.svg" alt="">
  </template>
  <template #item-text>
          <div >我的</div>
-      </template>
+      </template> 
 </tab-bar-item>
   </tab-bar>
 </template>
 
 <script>
-import TabBar from '../common/tabbar/TabBar'
-import TabBarItem from '../common/tabbar/TabBarItem'
+import TabBar from 'components/common/tabbar/TabBar'
+import TabBarItem from 'components/common/tabbar/TabBarItem'
 export default {
     components:{
          TabBar,
