@@ -6,14 +6,22 @@
       购物街
     </template>
   </nav-bar>
- <home-swiper :banners="banners"></home-swiper>
+<div class="warper">
+  <div class="content">
+     <home-swiper :banners="banners"></home-swiper>
 <recommond-view :recommends="recommend"></recommond-view>
 <feature-view></feature-view>
 <tab-bar-control :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-bar-control>
 <goods-list :goods="showItem"></goods-list>
   
+<h1>d</h1>
+<h1>d</h1>
+<h1>d</h1>
+  </div>
+</div>
 
  </div>
+ 
  
 </template>
 
@@ -27,6 +35,7 @@ import TabBarControl from "components/content/tabbarControl/TabBarControl"
 import GoodsList from "components/content/goods/GoodsList"
 
 import {getHomeMultidata,getGoods} from "network/home.js"
+
 export default {
 components:{
 NavBar,
@@ -99,7 +108,7 @@ getGoods(type,page).then(res=>{
 <style >
 #home {
   padding-top: 44px;
-  height: 6000px;
+
 }
 .home-nav {
   background-color: var(--color-text);
@@ -112,7 +121,7 @@ getGoods(type,page).then(res=>{
 }
 .TabBarControl {
     position: -webkit-sticky;
-  position: sticky;
-  top: 44px;
+    position: sticky;
+   top: 44px;
 }
 </style>
