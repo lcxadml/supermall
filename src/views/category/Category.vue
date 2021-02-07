@@ -126,7 +126,7 @@ methods:{
 
 },
 mounted(){
- this.scroll = new BScroll(document.querySelector(".wrapper"),{
+ this.scroll = new BScroll(this.$refs.aaa,{
    click: true,
    probeType:3,
     pullUpLoad: true
@@ -141,7 +141,7 @@ mounted(){
 }
 </script>
 
-<style>
+<style  scoped>
 .wrapper {
   height: 300px;
    background:red;

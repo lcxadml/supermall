@@ -6,19 +6,18 @@
       购物街
     </template>
   </nav-bar>
-<div class="warper">
-  <div class="content">
-     <home-swiper :banners="banners"></home-swiper>
+
+ <scroll class="aaa" ref="scroll">
+   
+         <home-swiper :banners="banners"></home-swiper>
 <recommond-view :recommends="recommend"></recommond-view>
 <feature-view></feature-view>
 <tab-bar-control :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-bar-control>
 <goods-list :goods="showItem"></goods-list>
-  
-<h1>d</h1>
-<h1>d</h1>
-<h1>d</h1>
-  </div>
-</div>
+<a>&nbsp;</a>
+ </scroll>
+ <!-- .native监听组件事件 -->
+<back-top @click.native="backClick"></back-top>
 
  </div>
  
@@ -30,12 +29,14 @@ import HomeSwiper from "./childcomponents/HomeSwiper"
 import RecommondView from "./childcomponents/RecommondView"
 import FeatureView from './childcomponents/FeatureView'
 
+
 import NavBar from "components/common/navbar/NavBar"
+import Scroll from "components/common/scroll/Scroll"
 import TabBarControl from "components/content/tabbarControl/TabBarControl"
 import GoodsList from "components/content/goods/GoodsList"
+import BackTop from "components/content/backTop/BackTop"
 
 import {getHomeMultidata,getGoods} from "network/home.js"
-
 export default {
 components:{
 NavBar,
@@ -43,10 +44,13 @@ HomeSwiper,
 RecommondView,
 FeatureView,
 TabBarControl,
-GoodsList
+GoodsList,
+Scroll,
+BackTop
 // GoodsListItem
 
 },
+
 computed:{
   showItem(){
     return this.goods[this.goodslist[this.currentIndex]].list
@@ -54,6 +58,7 @@ computed:{
 },
 data(){
 return {
+  scroll:null,
 banners:[],
 recommend:[],
 currentIndex:0,
@@ -80,7 +85,10 @@ methods:{
   */
  tabClick(index){
   this.currentIndex = index;
-
+ },
+ backClick(){
+   console.log("backclick");
+ this.$refs.scroll.scrollTo(0,0,500);
  },
 
   /*
@@ -105,10 +113,11 @@ getGoods(type,page).then(res=>{
 }
 </script>
 
-<style >
+<style scoped>
 #home {
+  position: relative;
+  height: 100vh;
   padding-top: 44px;
-
 }
 .home-nav {
   background-color: var(--color-text);
@@ -119,9 +128,23 @@ getGoods(type,page).then(res=>{
   right: 0;
   top: 0;
 }
-.TabBarControl {
+/* .TabBarControl {
     position: -webkit-sticky;
     position: sticky;
    top: 44px;
+} */
+/* .aaa {
+  margin-top: 44px;
+ height: calc(100vh - 93px);
+  overflow: hidden;
+} */
+.aaa {
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
+  
 }
+
 </style>

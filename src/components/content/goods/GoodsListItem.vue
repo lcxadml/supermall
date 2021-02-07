@@ -1,7 +1,7 @@
 <template>
   <div class="goodlistitem">
       <div>
-          <a href="#">
+          <a :href="goodsItem.link">
               <img :src="goodsItem.show.img" alt="">
           <div class="box">
               <p>{{goodsItem.title}}</p>
