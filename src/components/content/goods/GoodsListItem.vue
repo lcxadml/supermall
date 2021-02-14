@@ -1,20 +1,31 @@
 <template>
-  <div class="goodlistitem">
+  <div class="goodlistitem" @click="itemClick">
       <div>
-          <a :href="goodsItem.link">
-              <img :src="goodsItem.show.img" alt="">
+
+              <img :src="goodsItem.show.img" alt="" @load="imageLoad">
           <div class="box">
               <p>{{goodsItem.title}}</p>
           <span class="price">{{goodsItem.orgPrice}}</span>&nbsp;&nbsp;
           <span class="collect">{{goodsItem.cfav}}</span>
           </div>
-          </a>
+      
       </div>
+      
   </div>
 </template>
 
 <script>
+import bus from 'common/mitt'
 export default {
+    methods:{
+        imageLoad(){
+        bus.$emit('itemImageLoad')
+},
+    itemClick(){
+        this.$router.push("/detail"+this.goodsItem.iid)
+    }
+    },
+  
     props:{
         goodsItem:{
             type:Object,
@@ -22,7 +33,8 @@ export default {
                 return {}
             }
         }
-    }
+    },
+  
 }
 </script>
 

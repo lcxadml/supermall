@@ -5,19 +5,34 @@
     <template #center>
       购物街
     </template>
+    
   </nav-bar>
+<tab-bar-control :titles="['流行','新款','精选']"
+ @tabClick="tabClick"
+ ref="tabControl1"
+ class="tab-control"
+   v-show="isTabFixed"
+></tab-bar-control>
+ <scroll class="aaa" ref="scroll"
+  :probe-type="3"
+   @scroll="contentScroll"
+  :pullUpLoad = "true"
+  @pullingUp = "pullingUp"
 
- <scroll class="aaa" ref="scroll">
+ >
    
-         <home-swiper :banners="banners"></home-swiper>
-<recommond-view :recommends="recommend"></recommond-view>
+         <home-swiper :banners="banners" @swiperImageLoad= "swiperImageLoad"></home-swiper>
+<recommond-view :recommend="recommend"></recommond-view>
 <feature-view></feature-view>
-<tab-bar-control :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-bar-control>
+<tab-bar-control :titles="['流行','新款','精选']"
+ @tabClick="tabClick"
+ ref="tabControl"
+></tab-bar-control>
 <goods-list :goods="showItem"></goods-list>
-<a>&nbsp;</a>
+<a class="hidden">&nbsp;</a>
  </scroll>
  <!-- .native监听组件事件 -->
-<back-top @click.native="backClick"></back-top>
+<back-top @click.native="backClick"  v-show="showBack"></back-top>
 
  </div>
  
@@ -36,8 +51,11 @@ import TabBarControl from "components/content/tabbarControl/TabBarControl"
 import GoodsList from "components/content/goods/GoodsList"
 import BackTop from "components/content/backTop/BackTop"
 
+import bus from 'common/mitt'
+import {debounce} from 'common/util'
 import {getHomeMultidata,getGoods} from "network/home.js"
 export default {
+  name:"Home",
 components:{
 NavBar,
 HomeSwiper,
@@ -67,25 +85,91 @@ goods:{
   'pop':{page:0,list:[]},
   'new':{page:0,list:[]},
   'sell':{page:0,list:[]}
-}
+},
+showBack:false,
+tabOffsetTop:0,
+isTabFixed:false
 }
 },
 created(){
   //  1请求多个数据
  this.getHomeMultidata(),
-
+console.log("daaaaaaaaaaaaaaaaaaaaaaaaaaaaafafas");
 //  请求商品数据
  this.getGoods('pop');
  this.getGoods('new');
  this.getGoods('sell');
+
 },
+activated(){
+console.log("activated进来");
+},
+deactivated(){
+console.log("deactivated离开");
+},
+mounted(){
+// 3 获取topControl的offsetTop
+// 所有组件中都有一个$el:属性，用于获取组件中的元素
+// this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
+
+
+
+const refresh = debounce(this.$refs.scroll.refresh,500)
+  //  监听图片加载完成
+bus.$on('itemImageLoad',()=>{
+  refresh()
+})
+},
+destroyed(){
+    console.log("destroyed");
+},
+
 methods:{
+  pullingUp(){
+    // this,getGoods(this.goodslist[this.currentIndex]);
+    this.getGoods(this.goodslist[this.currentIndex]);
+    this.$refs.scroll && this.$refs.scroll.finishPullUp()
+  },
+//   imageLoad(){
+//     return function(){
+// this.$refs.scroll && ;
+// this.getGoods(this.goodslist[this.currentIndex]);
+//     }
+//   },
+  // 防抖
+  
+  /*
+   * 隐藏和显示回到顶部标签
+  */
+  contentScroll(posstion){
+    // 判断Backtop是否显示
+this.showBack = -posstion.y>1000
+// 2决定tabcontrol是否吸顶（position）
+this.isTabFixed =  (-posstion.y)>this.tabOffsetTop
+  },
+  /*
+   * 上拉加载更多
+  */
+// LoadMore(){
+//   console.log("上拉加载更多啊啊");
+//   this.getGoods(this.goodslist[this.currentIndex]);
+//   this.$refs.scroll.scroll.refresh()
+// },
   /*
    * 事件监听相关的方法
   */
+ swiperImageLoad(){
+  this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
+ },
  tabClick(index){
   this.currentIndex = index;
+     this.$refs.tabControl1.currentIndex = index
+  this.$refs.tabControl.currentIndex =index
+
  },
+ /*
+   * 调用回到顶部方法
+  */
  backClick(){
    console.log("backclick");
  this.$refs.scroll.scrollTo(0,0,500);
@@ -96,7 +180,6 @@ methods:{
   */
   getHomeMultidata(){
 getHomeMultidata().then(res=>{
-   console.log(res);
    this.banners = res.data.banner.list
    this.recommend = res.data.recommend.list
    
@@ -105,8 +188,10 @@ getHomeMultidata().then(res=>{
   getGoods(type){
     const page = this.goods[type].page+1
 getGoods(type,page).then(res=>{
-    console.log(res.data.list);
-    this.goods[type].list.push(...res.data.list)
+    // console.log(res.data.list);
+    this.goods[type].list.push(...res.data.list);
+    this.goods[type].page+=1;
+    // this.$refs.scroll.finishPullUp();
  })
   }
 }
@@ -117,16 +202,17 @@ getGoods(type,page).then(res=>{
 #home {
   position: relative;
   height: 100vh;
-  padding-top: 44px;
+ 
 }
 .home-nav {
+  z-index: 99;
   background-color: var(--color-text);
   color: #fff;
-  position: fixed;
+  /* position: fixed;
   z-index: 9;
   left: 0;
   right: 0;
-  top: 0;
+  top: 0; */
 }
 /* .TabBarControl {
     position: -webkit-sticky;
@@ -139,6 +225,7 @@ getGoods(type,page).then(res=>{
   overflow: hidden;
 } */
 .aaa {
+  overflow: hidden;
   position: absolute;
   top: 44px;
   bottom: 49px;
@@ -146,5 +233,11 @@ getGoods(type,page).then(res=>{
   right: 0;
   
 }
-
+.hidden {
+  font-size: 0.1px;
+}
+.tab-control {
+  position: relative;
+  z-index: 9;
+}
 </style>

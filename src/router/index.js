@@ -4,29 +4,44 @@ const Home=() => import("../views/home//Home")
 const Category=() => import("../views/category/Category")
 const Profile=() => import("../views/profile/Profile")
 const Shopcart=() => import("../views/shopcart/Shopcart")
+const Detail=() => import("../views/detail/Detail")
 // 安装插件
 // Vue.useContext(VueRouter)
 
     const routes = [
         {
             path:"",
-            redirect:"/home"
+            redirect:"/home",
           },
           {
             path:"/home",
-            component:Home
+            name:"Home",
+            component:Home,
+            meta:{keepAlive:true}
           },
           {
             path:"/category",
-            component:Category
+            name:"Category",
+            component:Category,
+            meta:{keepAlive:true}
           },
           {
             path:"/profile",
-            component:Profile
+            name:"Profile",
+            component:Profile,
+            meta:{keepAlive:true}
           },
           {
             path:"/shopcart",
-            component:Shopcart
+            name:"Shopcart",
+            component:Shopcart,
+            meta:{keepAlive:true}
+          },
+          {
+            path:"/detail:iid",
+            name:"Detail",
+            component:Detail,
+            meta:{keepAlive:true}
           }
     ]
     // 2,创建router

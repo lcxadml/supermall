@@ -114,11 +114,13 @@ import BScroll from "better-scroll"
 
 
 export default {
+  name:"Category",
   data(){
     return {
       scroll:null
     }
   },
+ 
 created(){
  
 },
