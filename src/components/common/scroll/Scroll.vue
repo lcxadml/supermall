@@ -32,7 +32,8 @@ mounted(){
     this.scroll = new BScroll(this.$refs.aaa,{
         mouseWheel:true,click:true,
         probeType:this.probeType,pullUpLoad:this.pullUpLoad,
-        useTransition:false
+        useTransition:false,
+        observeDOM:true
     });
     // 监听滚动位置
     this.scroll.on("scroll",(posstion)=>{

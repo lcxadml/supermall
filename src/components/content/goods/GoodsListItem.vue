@@ -2,7 +2,7 @@
   <div class="goodlistitem" @click="itemClick">
       <div>
 
-              <img :src="goodsItem.show.img" alt="" @load="imageLoad">
+              <img :src="showImage" alt="" @load="imageLoad">
           <div class="box">
               <p>{{goodsItem.title}}</p>
           <span class="price">{{goodsItem.orgPrice}}</span>&nbsp;&nbsp;
@@ -19,13 +19,23 @@ import bus from 'common/mitt'
 export default {
     methods:{
         imageLoad(){
-        bus.$emit('itemImageLoad')
+  bus.$emit('itemImageLoad')
+
+    //    if(this.$route.path.indexOf('/home')){
+    //         bus.$emit('itemImageLoad')
+    //    }else if(this.$route.path.indexOf('/detail')){
+    //         bus.$emit('detailImageLoad')
+    //    }
 },
     itemClick(){
         this.$router.push("/detail"+this.goodsItem.iid)
     }
     },
-  
+  computed:{
+      showImage(){
+          return this.goodsItem.image || this.goodsItem.show.img
+      }
+  },
     props:{
         goodsItem:{
             type:Object,

@@ -52,7 +52,8 @@ import GoodsList from "components/content/goods/GoodsList"
 import BackTop from "components/content/backTop/BackTop"
 
 import bus from 'common/mitt'
-import {debounce} from 'common/util'
+import {itemListenerMixin} from "common/mixin"
+
 import {getHomeMultidata,getGoods} from "network/home.js"
 export default {
   name:"Home",
@@ -88,42 +89,44 @@ goods:{
 },
 showBack:false,
 tabOffsetTop:0,
-isTabFixed:false
+isTabFixed:false,
+
 }
 },
 created(){
   //  1请求多个数据
  this.getHomeMultidata(),
-console.log("daaaaaaaaaaaaaaaaaaaaaaaaaaaaafafas");
 //  请求商品数据
  this.getGoods('pop');
  this.getGoods('new');
  this.getGoods('sell');
 
 },
-activated(){
-console.log("activated进来");
+
+// mounted(){
+// // 3 获取topControl的offsetTop
+// // 所有组件中都有一个$el:属性，用于获取组件中的元素
+// // this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
+
+
+
+// let refresh = debounce(this.$refs.scroll.refresh,500)
+// // 保存监听事件的函数
+// this.itemImgListener = ()=>{
+//   refresh()
+// }
+//   //  监听图片加载完成
+// bus.$on('itemImageLoad',this.itemImgListener)
+// },
+mixins:[itemListenerMixin],
+unmounted(){
+// 取消全局事件的监听
+bus.$off('itemImageLoad',this.itemImgListener)
+
 },
 deactivated(){
-console.log("deactivated离开");
+  console.log("deactivated");
 },
-mounted(){
-// 3 获取topControl的offsetTop
-// 所有组件中都有一个$el:属性，用于获取组件中的元素
-// this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
-
-
-
-const refresh = debounce(this.$refs.scroll.refresh,500)
-  //  监听图片加载完成
-bus.$on('itemImageLoad',()=>{
-  refresh()
-})
-},
-destroyed(){
-    console.log("destroyed");
-},
-
 methods:{
   pullingUp(){
     // this,getGoods(this.goodslist[this.currentIndex]);
