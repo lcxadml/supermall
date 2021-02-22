@@ -1,15 +1,16 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav" @itemClick="itemClick"></detail-nav-bar>
- <scroll class="content" ref="scroll">
+    <detail-nav-bar class="detail-nav" @itemClick="itemClick" ref="nav"></detail-nav-bar>
+ <scroll class="content" ref="scroll" @scroll="contentScroll" probe-type=3>
     <detail-swiper :topImages="topImage"></detail-swiper>
   <detail-base-info :goods="goods"></detail-base-info>
   <detail-shop-info :shop="shop"></detail-shop-info>
   <detail-goods-info :detail-info="detailInfo" @imgLoad="imageLoad"></detail-goods-info>
   <detail-param-info :paramInfo="paramInfo" ref="paraminfo"></detail-param-info>
   <detail-comment-info :comment-info="commentInfo" ref="comment"></detail-comment-info>
-  <goods-list :goods="recommends" ref="recommend"></goods-list>
+  <goods-list :goods="recommends" ref="recommend" class="goodlist"></goods-list>
  </scroll>
+ <detail-bottom-bar></detail-bottom-bar>
   </div>
 </template>
 
@@ -21,11 +22,12 @@ import DetailBaseInfo from "./child/DetailBaseInfo"
 import DetailShopInfo from "./child/DetailShopInfo"
 import DetailGoodsInfo from "./child/DetailGoodsInfo"
 import DetailParamInfo from "./child/DetailParamInfo"
+import DetailBottomBar from "./child/DetailBottomBar"
 import Scroll from "components/common/scroll/Scroll"
 import DetailCommentInfo from "./child/DetailCommentInfo"
 import GoodsList from "components/content/goods/GoodsList"
 import bus from 'common/mitt'
-import {debounce} from 'common/mitt'
+import {debounce} from 'common/util'
 import {itemListenerMixin} from "common/mixin"
 export default {
   
@@ -41,7 +43,8 @@ export default {
             commentInfo:{},
             recommends:[],
             themeTopYs:[],
-            getThemTopY:null
+            getThemTopY:null,
+            currentIndex:null
         }
     },
     mixins:[itemListenerMixin],
@@ -84,7 +87,7 @@ getRecommend().then(res=>{
       this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
       this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
       console.log(this.themeTopYs);
-  })
+  },1000)
     },
     mounted(){
    
@@ -104,7 +107,18 @@ bus.$off('itemImageLoad',this.itemImgListener)
       itemClick(index){
         console.log(index);
         this.$refs.scroll.scrollTo(0,-this.themeTopYs[index],500)
-      }
+      },
+      contentScroll(position){
+        const positionY = -position.y
+        let length = this.themeTopYs.length
+        // positionY 和主题中的Y进行对比
+        for(let i=0;i<length;i++){
+          if(this.currentIndex!==i&&((i<length-1&&positionY<this.themeTopYs[i+1]&&positionY>this.themeTopYs[i]) || (i===length-1&&positionY>this.themeTopYs[i]))){
+           this.currentIndex = i;
+           this.$refs.nav.currentIndex = this.currentIndex
+          }
+        }
+}
     },
     
     components:{
@@ -116,7 +130,8 @@ bus.$off('itemImageLoad',this.itemImgListener)
       DetailGoodsInfo,
       DetailParamInfo,  
       DetailCommentInfo,
-      GoodsList
+      GoodsList,
+      DetailBottomBar
     }
     
 }
@@ -138,5 +153,8 @@ bus.$off('itemImageLoad',this.itemImgListener)
   position: relative;
   z-index: 99;
   background-color: #fff;
+}
+.goodlist {
+  height: 3000px;
 }
 </style>

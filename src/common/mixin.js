@@ -8,7 +8,6 @@ export const itemListenerMixin = {
         refresh()
       }
       bus.$on('itemImageLoad',this.iamgeListener)
-      console.log("我是混入的mixin");
     },
     data(){
         return {

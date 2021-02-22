@@ -18,7 +18,6 @@
    @scroll="contentScroll"
   :pullUpLoad = "true"
   @pullingUp = "pullingUp"
-
  >
    
          <home-swiper :banners="banners" @swiperImageLoad= "swiperImageLoad"></home-swiper>

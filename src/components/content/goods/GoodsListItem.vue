@@ -19,7 +19,7 @@ import bus from 'common/mitt'
 export default {
     methods:{
         imageLoad(){
-  bus.$emit('itemImageLoad')
+  bus.$emit('itemImageLoad')    
 
     //    if(this.$route.path.indexOf('/home')){
     //         bus.$emit('itemImageLoad')
