@@ -1,5 +1,10 @@
 <template>
   <div id="detail">
+    <ul>
+      <li v-for="item in $store.state.cartList" :key="item">
+          {{item}}
+      </li>
+    </ul>
     <detail-nav-bar class="detail-nav" @itemClick="itemClick" ref="nav"></detail-nav-bar>
  <scroll class="content" ref="scroll" @scroll="contentScroll" probe-type=3>
     <detail-swiper :topImages="topImage"></detail-swiper>
@@ -10,7 +15,9 @@
   <detail-comment-info :comment-info="commentInfo" ref="comment"></detail-comment-info>
   <goods-list :goods="recommends" ref="recommend" class="goodlist"></goods-list>
  </scroll>
- <detail-bottom-bar></detail-bottom-bar>
+  <!-- .native监听组件事件 -->
+<back-top @click.native="backClick"  v-show="showBack"></back-top>
+ <detail-bottom-bar @addCart="addCart"></detail-bottom-bar>
   </div>
 </template>
 
@@ -29,6 +36,7 @@ import GoodsList from "components/content/goods/GoodsList"
 import bus from 'common/mitt'
 import {debounce} from 'common/util'
 import {itemListenerMixin} from "common/mixin"
+import BackTop from "components/content/backTop/BackTop"
 export default {
   
     name:"detail",
@@ -44,7 +52,8 @@ export default {
             recommends:[],
             themeTopYs:[],
             getThemTopY:null,
-            currentIndex:null
+            currentIndex:null,
+            showBack:false
         }
     },
     mixins:[itemListenerMixin],
@@ -100,6 +109,27 @@ getRecommend().then(res=>{
 bus.$off('itemImageLoad',this.itemImgListener)
     },
     methods:{
+      addCart(){
+      // 获取购物车需要展示的信息
+      const product = {}
+      product.image = this.topImage;
+      product.title = this.goods.title;
+      product.desc = this.detailInfo.desc;
+      product.price = this.goods.price;
+      product.iid = this.iid ;
+      product.realprice = this.realprice;
+
+      // 将商品添加到购物车里
+      // this.$store.commit('addCart',product);
+      this.$store.dispatch('addCart',product);
+      },
+       /*
+   * 调用回到顶部方法
+  */
+ backClick(){
+        console.log("backclick");
+      this.$refs.scroll.scrollTo(0,0,500);
+      },
       imageLoad(){
         this.$refs.scroll.refresh()
       this.getThemTopY()
@@ -118,6 +148,8 @@ bus.$off('itemImageLoad',this.itemImgListener)
            this.$refs.nav.currentIndex = this.currentIndex
           }
         }
+            // 3是否显示回到顶部
+      this.showBack = positionY>1000
 }
     },
     
@@ -131,7 +163,8 @@ bus.$off('itemImageLoad',this.itemImgListener)
       DetailParamInfo,  
       DetailCommentInfo,
       GoodsList,
-      DetailBottomBar
+      DetailBottomBar,
+      BackTop
     }
     
 }
@@ -155,6 +188,6 @@ bus.$off('itemImageLoad',this.itemImgListener)
   background-color: #fff;
 }
 .goodlist {
-  height: 3000px;
+  height: 2000px;
 }
 </style>
