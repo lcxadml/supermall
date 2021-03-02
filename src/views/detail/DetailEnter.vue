@@ -13,7 +13,6 @@
   <!-- .native监听组件事件 -->
 <back-top @click.native="backClick"  v-show="showBack"></back-top>
  <detail-bottom-bar @addCart="addCart" class="detailbottom"></detail-bottom-bar>
- <toast :message="message" :show="show"></toast>
   </div>
 </template>
 
@@ -33,9 +32,6 @@ import bus from 'common/mitt'
 import {debounce} from 'common/util'
 import {itemListenerMixin} from "common/mixin"
 import BackTop from "components/content/backTop/BackTop"
-import Toast from "components/common/toast/toast"
-
-import { reactive, getCurrentInstance } from 'vue';
 export default {
   
     name:"detail",
@@ -52,9 +48,7 @@ export default {
             themeTopYs:[],
             getThemTopY:null,
             currentIndex:null,
-            showBack:false,
-            message:"",
-            show:false
+            showBack:false
         }
     },
     mixins:[itemListenerMixin],
@@ -123,17 +117,7 @@ bus.$off('itemImageLoad',this.itemImgListener)
 
       // 将商品添加到购物车里
       // this.$store.commit('addCart',product);
-      this.$store.dispatch('addCart',product).then(res=>{
-        this.show = true
-        this.message = res;
-        
-        
-        setTimeout(()=>{
-          this.show = false;
-        },1000)
-      });
-
-
+      this.$store.dispatch('addCart',product);
       },
        /*
    * 调用回到顶部方法
@@ -176,10 +160,9 @@ bus.$off('itemImageLoad',this.itemImgListener)
       DetailCommentInfo,
       GoodsList,
       DetailBottomBar,
-      BackTop,
-      Toast
+      BackTop
     }
-
+    
 }
 </script>
 
